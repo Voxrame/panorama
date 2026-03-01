@@ -2,8 +2,8 @@ package tile
 
 import (
 	"github.com/lord-server/panorama/internal/game"
-	"github.com/lord-server/panorama/internal/world"
 	"github.com/lord-server/panorama/pkg/geom"
+	"github.com/lord-server/panorama/pkg/world"
 )
 
 type NextTiler struct {

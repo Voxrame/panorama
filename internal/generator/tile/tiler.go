@@ -13,10 +13,10 @@ import (
 
 	"github.com/lord-server/panorama/internal/game"
 	"github.com/lord-server/panorama/internal/generator/rasterizer"
-	"github.com/lord-server/panorama/internal/world"
 	"github.com/lord-server/panorama/pkg/geom"
 	"github.com/lord-server/panorama/pkg/imageutil"
 	"github.com/lord-server/panorama/pkg/lm"
+	"github.com/lord-server/panorama/pkg/world"
 )
 
 type TilePosition struct {

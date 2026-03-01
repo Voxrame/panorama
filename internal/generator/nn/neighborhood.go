@@ -1,8 +1,8 @@
 package nn
 
 import (
-	"github.com/lord-server/panorama/internal/world"
 	"github.com/lord-server/panorama/pkg/geom"
+	"github.com/lord-server/panorama/pkg/world"
 )
 
 type BlockNeighborhood struct {

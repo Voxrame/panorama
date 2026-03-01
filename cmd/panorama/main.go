@@ -11,7 +11,7 @@ import (
 	"github.com/lord-server/panorama/internal/generator/flat"
 	"github.com/lord-server/panorama/internal/generator/tile"
 	"github.com/lord-server/panorama/internal/server"
-	"github.com/lord-server/panorama/internal/world"
+	"github.com/lord-server/panorama/pkg/world"
 	"github.com/lord-server/panorama/static"
 )
 
