@@ -9,7 +9,7 @@ type BlocksAlongY struct {
 }
 
 func (s BlocksAlongY) Query() (string, []any) {
-	return "SELECT posx, posy, posz, data FROM blocks WHERE posx=$1 and posz=$2 ORDER BY posy", []any{
+	return "SELECT x, y, z, data FROM blocks WHERE x=$1 and z=$2 ORDER BY y", []any{
 		s.X, s.Z,
 	}
 }

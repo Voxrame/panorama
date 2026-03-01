@@ -37,7 +37,7 @@ func (b *Backend) Close() error {
 func (b *Backend) GetBlockData(pos geom.BlockPosition) ([]byte, error) {
 	var data []byte
 
-	err := b.db.QueryRow("SELECT data FROM blocks WHERE posx=$1 AND posy=$2 AND posz=$3", pos.X, pos.Y, pos.Z).Scan(&data)
+	err := b.db.QueryRow("SELECT data FROM blocks WHERE x=$1 AND y=$2 AND z=$3", pos.X, pos.Y, pos.Z).Scan(&data)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}

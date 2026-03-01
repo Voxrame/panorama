@@ -23,3 +23,8 @@ tasks:
     desc: Clean build artifacts
     cmds:
       - rm -rf bin
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test -v ./...
