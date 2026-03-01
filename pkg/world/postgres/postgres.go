@@ -83,9 +83,3 @@ func (p *Backend) GetBlocks(sel selector.BlockSelector, callback func(geom.Block
 
 	return nil
 }
-
-type PostgresBackend = Backend
-
-func NewPostgresBackend(dsn string) (*PostgresBackend, error) {
-	return NewBackend(dsn)
-}

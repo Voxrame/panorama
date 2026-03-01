@@ -18,12 +18,6 @@ type Backend interface {
 	Close() error
 }
 
-type PostgresBackend = postgres.Backend
-
-func NewPostgresBackend(dsn string) (*PostgresBackend, error) {
-	return postgres.NewBackend(dsn)
-}
-
 type World struct {
 	backend           Backend
 	decodedBlockCache *lru.Cache[geom.BlockPosition, *MapBlock]
@@ -51,7 +45,7 @@ func NewWorld(path string) (World, error) {
 			return world, errors.New("postgresql connection not specified")
 		}
 
-		backend, err = NewPostgresBackend(dsn)
+		backend, err = postgres.NewBackend(dsn)
 		if err != nil {
 			return world, fmt.Errorf("unable to create PostgreSQL backend: %w", err)
 		}
