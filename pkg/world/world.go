@@ -1,15 +1,13 @@
 package world
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"path/filepath"
 
 	lru "github.com/hashicorp/golang-lru/v2"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lord-server/panorama/pkg/geom"
+	"github.com/lord-server/panorama/pkg/world/postgres"
 	"github.com/lord-server/panorama/pkg/world/selector"
 	"github.com/lord-server/panorama/pkg/world/sqlite3"
 )
@@ -20,78 +18,10 @@ type Backend interface {
 	Close() error
 }
 
-type PostgresBackend struct {
-	conn *pgxpool.Pool
-}
+type PostgresBackend = postgres.Backend
 
 func NewPostgresBackend(dsn string) (*PostgresBackend, error) {
-	conn, err := pgxpool.New(context.Background(), dsn)
-	if err != nil {
-		return nil, err
-	}
-
-	return &PostgresBackend{
-		conn: conn,
-	}, nil
-}
-
-func (p *PostgresBackend) Close() error {
-	p.conn.Close()
-
-	return nil
-}
-
-func (p *PostgresBackend) GetBlockData(pos geom.BlockPosition) ([]byte, error) {
-	var data []byte
-
-	err := p.conn.QueryRow(context.Background(), "SELECT data FROM blocks WHERE posx=$1 and posy=$2 and posz=$3", pos.X, pos.Y, pos.Z).Scan(&data)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
-}
-
-func (p *PostgresBackend) GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, []byte) error) error {
-	sql, args := selector.Query()
-
-	rows, err := p.conn.Query(context.Background(), sql, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil
-	}
-
-	if err != nil {
-		return err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		var (
-			pos  geom.BlockPosition
-			data []byte
-		)
-
-		err = rows.Scan(&pos.X, &pos.Y, &pos.Z, &data)
-		if err != nil {
-			return err
-		}
-
-		err = callback(pos, data)
-		if err != nil {
-			return err
-		}
-	}
-
-	if err := rows.Err(); err != nil {
-		return err
-	}
-
-	return nil
+	return postgres.NewBackend(dsn)
 }
 
 type World struct {

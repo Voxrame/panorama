@@ -12,6 +12,7 @@ import (
 	"github.com/lord-server/panorama/internal/generator/tile"
 	"github.com/lord-server/panorama/internal/server"
 	"github.com/lord-server/panorama/pkg/world"
+	"github.com/lord-server/panorama/pkg/world/postgres"
 	"github.com/lord-server/panorama/static"
 )
 
@@ -69,7 +70,7 @@ func fullrender(config config.Config) error {
 			"err", err,
 			"world_path", config.System.WorldPath)
 
-		backend, err := world.NewPostgresBackend(config.System.WorldDSN)
+		backend, err := postgres.NewBackend(config.System.WorldDSN)
 		if err != nil {
 			slog.Error("unable to connect to world DB", "error", err)
 			return err
