@@ -2,6 +2,7 @@ package config
 
 import (
 	"io"
+	"log"
 	"os"
 
 	"github.com/BurntSushi/toml"
@@ -38,11 +39,13 @@ func LoadConfig(path string) (Config, error) {
 
 	file, err := os.Open(path)
 	if err != nil {
-		file.Close()
 		return config, err
 	}
-
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("error closing file: %v", err)
+		}
+	}()
 
 	data, err := io.ReadAll(file)
 	if err != nil {

@@ -3,6 +3,7 @@ package mesh
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -196,8 +197,11 @@ func LoadOBJ(path string) (Model, error) {
 	if err != nil {
 		return Model{}, err
 	}
-
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("error closing file: %v", err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	parser := objParser{

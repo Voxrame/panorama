@@ -5,6 +5,7 @@ import (
 	"compress/zlib"
 	"encoding/binary"
 	"io"
+	"log"
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/lord-server/panorama/pkg/geom"
@@ -89,7 +90,11 @@ func inflate(reader *bytes.Reader) ([]byte, error) {
 		return nil, err
 	}
 
-	defer zstdReader.Close()
+	defer func() {
+		if err := zstdReader.Close(); err != nil {
+			log.Printf("error closing zstd reader: %v", err)
+		}
+	}()
 
 	data, err := io.ReadAll(zstdReader)
 	if err != nil {

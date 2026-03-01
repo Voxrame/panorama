@@ -3,6 +3,7 @@ package world
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -16,8 +17,11 @@ func ParseMeta(path string) (Meta, error) {
 	if err != nil {
 		return nil, fmt.Errorf("can't read world metadata: %w", err)
 	}
-
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("error closing file: %v", err)
+		}
+	}()
 
 	sc := bufio.NewScanner(file)
 

@@ -53,10 +53,7 @@ func (r *IsometricRenderer) renderNode(
 
 	nodeDef := r.game.NodeDef(name)
 
-	needsAlphaBlending := true
-	if nodeDef.DrawType == game.DrawTypeNormal {
-		needsAlphaBlending = false
-	}
+	needsAlphaBlending := nodeDef.DrawType != game.DrawTypeNormal
 
 	maxParam1, hiddenFaces := r.estimateVisibility(nodeDef, neighborhood, param1, pos)
 

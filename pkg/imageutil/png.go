@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/draw"
 	"image/png"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -20,8 +21,11 @@ func LoadPNG(path string) (*image.NRGBA, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("error closing file: %v", err)
+		}
+	}()
 
 	img, err := png.Decode(file)
 	if err != nil {
@@ -46,11 +50,10 @@ func SavePNG(img *image.NRGBA, name string) error {
 		CompressionLevel: png.BestCompression,
 	}
 	if err := encoder.Encode(file, img); err != nil {
-		file.Close()
 		return err
 	}
-
 	if err := file.Close(); err != nil {
+		log.Printf("error closing file: %v", err)
 		return err
 	}
 
