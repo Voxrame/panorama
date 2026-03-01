@@ -11,12 +11,13 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lord-server/panorama/pkg/geom"
 	"github.com/lord-server/panorama/pkg/world/selector"
+	"github.com/lord-server/panorama/pkg/world/sqlite3"
 )
 
 type Backend interface {
 	GetBlockData(pos geom.BlockPosition) ([]byte, error)
 	GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, []byte) error) error
-	Close()
+	Close() error
 }
 
 type PostgresBackend struct {
@@ -34,8 +35,10 @@ func NewPostgresBackend(dsn string) (*PostgresBackend, error) {
 	}, nil
 }
 
-func (p *PostgresBackend) Close() {
+func (p *PostgresBackend) Close() error {
 	p.conn.Close()
+
+	return nil
 }
 
 func (p *PostgresBackend) GetBlockData(pos geom.BlockPosition) ([]byte, error) {
@@ -84,8 +87,6 @@ func (p *PostgresBackend) GetBlocks(selector selector.BlockSelector, callback fu
 		}
 	}
 
-	rows.Close()
-
 	if err := rows.Err(); err != nil {
 		return err
 	}
@@ -121,6 +122,14 @@ func NewWorld(path string) (World, error) {
 		}
 
 		backend, err = NewPostgresBackend(dsn)
+		if err != nil {
+			return world, fmt.Errorf("unable to create PostgreSQL backend: %w", err)
+		}
+
+	case "sqlite3":
+		dsn := filepath.Join(path, "map.sqlite")
+
+		backend, err = sqlite3.NewBackend(dsn)
 		if err != nil {
 			return world, fmt.Errorf("unable to create PostgreSQL backend: %w", err)
 		}
