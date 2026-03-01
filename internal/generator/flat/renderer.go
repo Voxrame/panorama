@@ -10,6 +10,7 @@ import (
 	"github.com/lord-server/panorama/pkg/geom"
 	"github.com/lord-server/panorama/pkg/lm"
 	"github.com/lord-server/panorama/pkg/world"
+	"github.com/lord-server/panorama/pkg/world/selector"
 )
 
 type FlatRenderer struct {
@@ -35,7 +36,7 @@ func (r *FlatRenderer) RenderTile(
 	rect := image.Rect(0, 0, 256, 256)
 	target := rasterizer.NewRenderBuffer(rect)
 
-	selector := world.BlocksAlongY{
+	selector := selector.BlocksAlongY{
 		X: tilePos.X,
 		Z: tilePos.Y,
 	}

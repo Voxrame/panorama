@@ -10,11 +10,12 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lord-server/panorama/pkg/geom"
+	"github.com/lord-server/panorama/pkg/world/selector"
 )
 
 type Backend interface {
 	GetBlockData(pos geom.BlockPosition) ([]byte, error)
-	GetBlocks(selector BlockSelector, callback func(geom.BlockPosition, []byte) error) error
+	GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, []byte) error) error
 	Close()
 }
 
@@ -52,7 +53,7 @@ func (p *PostgresBackend) GetBlockData(pos geom.BlockPosition) ([]byte, error) {
 	return data, nil
 }
 
-func (p *PostgresBackend) GetBlocks(selector BlockSelector, callback func(geom.BlockPosition, []byte) error) error {
+func (p *PostgresBackend) GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, []byte) error) error {
 	sql, args := selector.Query()
 
 	rows, err := p.conn.Query(context.Background(), sql, args...)
@@ -171,7 +172,7 @@ func (w *World) GetBlock(pos geom.BlockPosition) (*MapBlock, error) {
 	return block, nil
 }
 
-func (w *World) GetBlocks(selector BlockSelector, callback func(geom.BlockPosition, *MapBlock) error) error {
+func (w *World) GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, *MapBlock) error) error {
 	return w.backend.GetBlocks(selector, func(pos geom.BlockPosition, data []byte) error {
 		cachedBlock, ok := w.decodedBlockCache.Get(pos)
 

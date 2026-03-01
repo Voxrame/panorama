@@ -1,4 +1,4 @@
-package world
+package selector
 
 type BlockSelector interface {
 	Query() (string, []any)
