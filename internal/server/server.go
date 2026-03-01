@@ -6,20 +6,19 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/lord-server/panorama/internal/config"
 )
 
 func Serve(static fs.FS, config *config.Config) {
-	router := chi.NewRouter()
+	mux := http.NewServeMux()
 
 	staticRootDir, err := fs.Sub(static, "ui/build")
 	if err != nil {
 		panic(err)
 	}
 
-	router.Handle("/*", http.FileServer(http.FS(staticRootDir)))
-	router.Handle("/tiles/*", http.StripPrefix("/tiles", http.FileServer(http.Dir(config.System.TilesPath))))
+	mux.Handle("/*", http.FileServer(http.FS(staticRootDir)))
+	mux.Handle("/tiles/*", http.StripPrefix("/tiles", http.FileServer(http.Dir(config.System.TilesPath))))
 
 	httpServer := &http.Server{
 		ReadTimeout:       5 * time.Second,
@@ -27,7 +26,7 @@ func Serve(static fs.FS, config *config.Config) {
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       30 * time.Second,
 		Addr:              config.Web.ListenAddress,
-		Handler:           router,
+		Handler:           mux,
 	}
 
 	err = httpServer.ListenAndServe()
