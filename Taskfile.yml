@@ -1,0 +1,25 @@
+version: '3'
+
+vars:
+  GOEXE:
+    sh: go env GOEXE
+
+tasks:
+  default:
+    desc: Build everything
+    deps: [panorama]
+
+  panorama:
+    desc: Build panorama binary
+    cmds:
+      - go build -o bin/panorama{{.GOEXE}} ./cmd/panorama
+
+  lint:
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run --fix=false --color=always
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf bin
