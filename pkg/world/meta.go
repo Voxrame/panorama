@@ -28,11 +28,15 @@ func ParseMeta(path string) (Meta, error) {
 	for sc.Scan() {
 		parts := strings.SplitN(sc.Text(), "=", 2)
 		if len(parts) != 2 {
-			continue
+			return nil, fmt.Errorf("invalid key-value pair: %v", sc.Text())
 		}
 
 		key := strings.TrimSpace(parts[0])
 		value := strings.TrimSpace(parts[1])
+
+		if key == "" {
+			return nil, fmt.Errorf("file contains empty key")
+		}
 
 		meta[key] = value
 	}
