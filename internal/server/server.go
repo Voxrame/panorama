@@ -18,7 +18,6 @@ func Serve(static fs.FS, config *config.Config) {
 	}
 
 	mux.Handle("/*", http.FileServer(http.FS(staticRootDir)))
-	mux.Handle("/tiles/*", http.StripPrefix("/tiles", http.FileServer(http.Dir(config.System.TilesPath))))
 
 	httpServer := &http.Server{
 		ReadTimeout:       5 * time.Second,

@@ -3,7 +3,6 @@ module github.com/lord-server/panorama
 go 1.24.0
 
 require (
-	github.com/BurntSushi/toml v1.3.2
 	github.com/alexflint/go-arg v1.5.1
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/jackc/pgx/v5 v5.8.0
@@ -11,6 +10,7 @@ require (
 	github.com/ncruces/go-sqlite3 v0.30.5
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/stretchr/testify v1.11.1
+	go.yaml.in/yaml/v4 v4.0.0-rc.4
 )
 
 require (
