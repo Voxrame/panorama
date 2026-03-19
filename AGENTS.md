@@ -2,6 +2,5 @@
 
 ## Commands
 
-- `task` to build the project
-- `task lint` to run the linters
-- `task test` to run the tests
+- Check build errors with `cargo clippy`
+- Run tests `cargo nextest run`

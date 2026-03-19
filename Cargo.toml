@@ -1,0 +1,62 @@
+[workspace]
+members = [
+  "crates/panorama-asset",
+  "crates/panorama-bridge",
+  "crates/panorama-config",
+  "crates/panorama-renderer",
+  "crates/panorama-web",
+  "crates/panorama-world",
+]
+
+[package]
+name = "panorama"
+version = "0.1.0"
+edition = "2024"
+
+[workspace.dependencies]
+anyhow = "1.0.102"
+png = "0.18.1"
+glam = "0.32.1"
+axum = "0.8.8"
+deadpool-postgres = "0.14.1"
+flate2 = "1.1.9"
+rusqlite = "0.39.0"
+serde =  "1.0.228"
+serde-saphyr = "0.0.22"
+tokio = "1.50.0"
+tokio-postgres = "0.7.16"
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
+uuid = "1.22.0"
+zstd = "0.13.3"
+
+[dependencies]
+panorama-asset = { path = "crates/panorama-asset" }
+panorama-bridge = { path = "crates/panorama-bridge" }
+panorama-config = { path = "crates/panorama-config" }
+panorama-renderer = { path = "crates/panorama-renderer" }
+panorama-web = { path = "crates/panorama-web" }
+panorama-world = { path = "crates/panorama-world" }
+
+anyhow.workspace = true
+glam.workspace = true
+
+axum.workspace = true
+deadpool-postgres.workspace = true
+flate2.workspace = true
+rusqlite.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde-saphyr.workspace = true
+tokio = { workspace = true, features = ["full"] }
+tokio-postgres = { workspace = true, features = ["with-uuid-1"] }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+uuid = { workspace = true, features = ["v4", "serde"] }
+zstd.workspace = true
+
+[profile.release]
+split-debuginfo = "packed"
+strip = "symbols"
+# debug = "full"
+incremental = true

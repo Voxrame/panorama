@@ -1,0 +1,12 @@
+[package]
+name = "panorama-web"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+deadpool-postgres.workspace = true
+serde = { workspace = true, features = ["derive"] }
+tokio = { workspace = true, features = ["full"] }
+uuid = { workspace = true, features = ["v4", "serde"] }
