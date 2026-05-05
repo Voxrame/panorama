@@ -4,12 +4,12 @@ import (
 	"image"
 	"image/color"
 	"io/fs"
-	"log/slog"
 	"path/filepath"
 	"strings"
 
 	"github.com/Voxrame/panorama/pkg/imageutil"
 	"github.com/Voxrame/panorama/pkg/mesh"
+	"go.uber.org/zap"
 )
 
 type MediaCache struct {
@@ -36,7 +36,8 @@ func NewMediaCache() *MediaCache {
 func (m *MediaCache) fetchMedia(path string) error {
 	return filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			slog.Warn("encountered error while fetching media", "error", err, "dir_entry", d)
+			// FIXME: pass logger explicitly
+			zap.S().Warnw("Encountered error while fetching media", "error", err, "dir_entry", d.Name())
 
 			return nil
 		}
@@ -72,7 +73,6 @@ func (m *MediaCache) Image(name string) *image.NRGBA {
 	if img, ok := m.images[baseName]; ok {
 		return img
 	} else {
-		slog.Warn("unknown image", "name", name)
 		return m.dummyImage
 	}
 }
@@ -81,8 +81,6 @@ func (m *MediaCache) Mesh(name string) *mesh.Model {
 	if model, ok := m.models[name]; ok {
 		return model
 	} else {
-		slog.Warn("unknown mesh", "name", name)
-
 		return nil
 	}
 }

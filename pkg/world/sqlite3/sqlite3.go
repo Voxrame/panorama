@@ -3,7 +3,6 @@ package sqlite3
 import (
 	"database/sql"
 	"errors"
-	"log"
 
 	"github.com/Voxrame/panorama/pkg/geom"
 	"github.com/Voxrame/panorama/pkg/world/selector"
@@ -22,7 +21,6 @@ func NewBackend(dsn string) (*Backend, error) {
 	}
 
 	if err := db.Ping(); err != nil {
-		log.Printf("sqlite3: failed to ping database: %v", err)
 		_ = db.Close()
 		return nil, err
 	}
@@ -49,7 +47,7 @@ func (b *Backend) GetBlockData(pos geom.BlockPosition) ([]byte, error) {
 	return data, nil
 }
 
-func (b *Backend) GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, []byte) error) error {
+func (b *Backend) GetBlocks(selector selector.BlockSelector, callback func(geom.BlockPosition, []byte) error) (err error) {
 	query, args := selector.Query()
 
 	rows, err := b.db.Query(query, args...)
@@ -62,8 +60,8 @@ func (b *Backend) GetBlocks(selector selector.BlockSelector, callback func(geom.
 	}
 
 	defer func() {
-		if err := rows.Close(); err != nil {
-			log.Printf("sqlite3: failed to close rows: %v", err)
+		if closeErr := rows.Close(); closeErr != nil {
+			err = errors.Join(err, closeErr)
 		}
 	}()
 

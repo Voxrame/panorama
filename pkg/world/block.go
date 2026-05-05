@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"compress/zlib"
 	"encoding/binary"
+	"errors"
 	"io"
-	"log"
 
-	"github.com/klauspost/compress/zstd"
 	"github.com/Voxrame/panorama/pkg/geom"
+	"github.com/klauspost/compress/zstd"
 )
 
 const NodeSizeInBytes = 4
@@ -80,7 +80,7 @@ func (r *ReaderCounter) ReadByte() (byte, error) {
 	return b, err
 }
 
-func inflate(reader *bytes.Reader) ([]byte, error) {
+func inflate(reader *bytes.Reader) (data []byte, err error) {
 	position, _ := reader.Seek(0, io.SeekCurrent)
 
 	counter := NewReaderCounter(reader)
@@ -91,12 +91,12 @@ func inflate(reader *bytes.Reader) ([]byte, error) {
 	}
 
 	defer func() {
-		if err := zstdReader.Close(); err != nil {
-			log.Printf("error closing zstd reader: %v", err)
+		if readerErr := zstdReader.Close(); readerErr != nil {
+			err = errors.Join(err, readerErr)
 		}
 	}()
 
-	data, err := io.ReadAll(zstdReader)
+	data, err = io.ReadAll(zstdReader)
 	if err != nil {
 		return nil, err
 	}

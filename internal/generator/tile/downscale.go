@@ -3,7 +3,6 @@ package tile
 import (
 	"image"
 	"image/draw"
-	"log/slog"
 	"sort"
 
 	"github.com/nfnt/resize"
@@ -84,7 +83,7 @@ func (t *Tiler) downscalePositions(zoom int, positions []TilePosition) []TilePos
 
 		err := imageutil.SavePNG(target, imagePath)
 		if err != nil {
-			slog.Error("unable to save image", "err", err, "path", imagePath)
+			t.log.Errorw("Unable to save image", "err", err, "path", imagePath)
 		}
 
 		nextPositions = append(nextPositions, TilePosition{

@@ -160,7 +160,7 @@ func (r *IsometricRenderer) RenderTile(
 	tilePos tile.TilePosition,
 	world *world.World,
 	game *game.Game,
-) *rasterizer.RenderBuffer {
+) (*rasterizer.RenderBuffer, error) {
 	tilePos.Y *= 2
 
 	rect := image.Rect(0, 0, TileBlockWidth, TileBlockWidth)
@@ -200,7 +200,7 @@ func (r *IsometricRenderer) RenderTile(
 		}
 	}
 
-	return target
+	return target, nil
 }
 
 func (r *IsometricRenderer) ProjectRegion(region geom.Region) geom.ProjectedRegion {

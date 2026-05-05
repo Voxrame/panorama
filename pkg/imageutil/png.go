@@ -1,10 +1,10 @@
 package imageutil
 
 import (
+	"errors"
 	"image"
 	"image/draw"
 	"image/png"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -16,14 +16,15 @@ func toNRGBA(img image.Image) *image.NRGBA {
 	return dst
 }
 
-func LoadPNG(path string) (*image.NRGBA, error) {
+func LoadPNG(path string) (out *image.NRGBA, err error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
+
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("error closing file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			err = errors.Join(err, closeErr)
 		}
 	}()
 
@@ -53,7 +54,6 @@ func SavePNG(img *image.NRGBA, name string) error {
 		return err
 	}
 	if err := file.Close(); err != nil {
-		log.Printf("error closing file: %v", err)
 		return err
 	}
 

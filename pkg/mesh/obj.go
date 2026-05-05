@@ -2,8 +2,8 @@ package mesh
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -192,14 +192,15 @@ func (o *objParser) processLine(line string) error {
 	return nil
 }
 
-func LoadOBJ(path string) (Model, error) {
+func LoadOBJ(path string) (model Model, err error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return Model{}, err
+		return model, err
 	}
+
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("error closing file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			err = errors.Join(err, closeErr)
 		}
 	}()
 
@@ -218,15 +219,15 @@ func LoadOBJ(path string) (Model, error) {
 
 		err := parser.processLine(scanner.Text())
 		if err != nil {
-			return Model{}, err
+			return model, err
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return Model{}, err
+		return model, err
 	}
 
-	model := NewModel()
+	model = NewModel()
 	model.Meshes = append(model.Meshes, parser.mesh)
 
 	return model, nil

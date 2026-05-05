@@ -2,24 +2,25 @@ package world
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
 
 type Meta map[string]string
 
-func ParseMeta(path string) (Meta, error) {
-	meta := make(map[string]string)
+func ParseMeta(path string) (meta Meta, err error) {
+	meta = make(map[string]string)
 
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("can't read world metadata: %w", err)
 	}
+
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("error closing file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			err = errors.Join(err, closeErr)
 		}
 	}()
 

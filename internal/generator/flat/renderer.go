@@ -1,8 +1,8 @@
 package flat
 
 import (
+	"fmt"
 	"image"
-	"log/slog"
 
 	"github.com/Voxrame/panorama/internal/game"
 	"github.com/Voxrame/panorama/internal/generator/rasterizer"
@@ -32,7 +32,7 @@ func (r *FlatRenderer) RenderTile(
 	tilePos tile.TilePosition,
 	wd *world.World,
 	game *game.Game,
-) *rasterizer.RenderBuffer {
+) (*rasterizer.RenderBuffer, error) {
 	rect := image.Rect(0, 0, 256, 256)
 	target := rasterizer.NewRenderBuffer(rect)
 
@@ -45,10 +45,10 @@ func (r *FlatRenderer) RenderTile(
 		return nil
 	})
 	if err != nil {
-		slog.Error("unable to get blocks", "error", err)
+		return nil, fmt.Errorf("unable to get blocks: %w", err)
 	}
 
-	return target
+	return target, nil
 }
 
 func (r *FlatRenderer) ProjectRegion(region geom.Region) geom.ProjectedRegion {

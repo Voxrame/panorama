@@ -1,9 +1,9 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
 
 	"go.yaml.in/yaml/v4"
@@ -18,17 +18,15 @@ type Web struct {
 	Title         string `toml:"title"`
 }
 
-func LoadConfig(path string) (Config, error) {
-	var config Config
-
+func LoadConfig(path string) (config Config, err error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return config, fmt.Errorf("open file: %w", err)
 	}
 
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("error closing file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			err = errors.Join(err, closeErr)
 		}
 	}()
 

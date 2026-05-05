@@ -3,7 +3,6 @@ package tile
 import (
 	"fmt"
 	"io/fs"
-	"log/slog"
 	"os"
 	"path"
 	"path/filepath"
@@ -17,6 +16,7 @@ import (
 	"github.com/Voxrame/panorama/pkg/imageutil"
 	"github.com/Voxrame/panorama/pkg/lm"
 	"github.com/Voxrame/panorama/pkg/world"
+	"go.uber.org/zap"
 )
 
 type TilePosition struct {
@@ -24,7 +24,7 @@ type TilePosition struct {
 }
 
 type Renderer interface {
-	RenderTile(pos TilePosition, w *world.World, game *game.Game) *rasterizer.RenderBuffer
+	RenderTile(pos TilePosition, w *world.World, game *game.Game) (*rasterizer.RenderBuffer, error)
 	ProjectRegion(region geom.Region) geom.ProjectedRegion
 }
 
@@ -32,13 +32,16 @@ type Tiler struct {
 	region     geom.Region
 	zoomLevels int
 	tilesPath  string
+
+	log *zap.SugaredLogger
 }
 
-func NewTiler(region geom.Region, zoomLevels int, tilesPath string) Tiler {
+func NewTiler(log *zap.SugaredLogger, region geom.Region, zoomLevels int, tilesPath string) Tiler {
 	return Tiler{
 		region:     region,
 		zoomLevels: zoomLevels,
 		tilesPath:  tilesPath,
+		log: log,
 	}
 }
 
@@ -48,7 +51,14 @@ func (t *Tiler) tilePath(x, y, zoom int) string {
 
 func (t *Tiler) worker(wg *sync.WaitGroup, game *game.Game, world *world.World, renderer Renderer, positions <-chan TilePosition) {
 	for position := range positions {
-		output := renderer.RenderTile(position, world, game)
+		output, err := renderer.RenderTile(position, world, game)
+		if err != nil {
+			t.log.Errorw("Unable to render tile",
+				"x", position.X,
+				"y", position.Y,
+			)
+		}
+
 		// Don't save empty tiles
 		if !output.Dirty {
 			continue
@@ -56,12 +66,12 @@ func (t *Tiler) worker(wg *sync.WaitGroup, game *game.Game, world *world.World, 
 
 		tilePath := t.tilePath(position.X, position.Y, 0)
 
-		err := imageutil.SavePNG(output.Color, tilePath)
+		err = imageutil.SavePNG(output.Color, tilePath)
 		if err != nil {
 			return
 		}
 
-		slog.Info("saved", "path", tilePath)
+		t.log.Infow("Saved tile", "path", tilePath)
 	}
 
 	wg.Done()
@@ -102,7 +112,7 @@ func (t *Tiler) FullRender(game *game.Game, world *world.World, workers int, reg
 
 // DownscaleTiles rescales high-resolution tiles into lower resolution ones until it reaches adequate zoom level
 func (t *Tiler) DownscaleTiles() {
-	slog.Info("downscaling", "zoomLevels", t.zoomLevels)
+	t.log.Infow("Downscaling", "zoomLevels", t.zoomLevels)
 
 	tileDir, err := filepath.Abs(path.Join(t.tilesPath, "0"))
 	if err != nil {
@@ -121,14 +131,14 @@ func (t *Tiler) DownscaleTiles() {
 
 		y, err := strconv.Atoi(strings.TrimSuffix(file, filepath.Ext(file)))
 		if err != nil {
-			slog.Warn("skipped file due to error", "path", path, "err", err)
+			t.log.Warnw("Skipped file due to error", "path", path, "err", err)
 
 			return nil
 		}
 
 		x, err := strconv.Atoi(filepath.Base(dir))
 		if err != nil {
-			slog.Warn("skipped file due to error", "path", path, "err", err)
+			t.log.Warnw("Skipped file due to error", "path", path, "err", err)
 
 			return nil
 		}
@@ -148,7 +158,7 @@ func (t *Tiler) DownscaleTiles() {
 	positions = uniquePositions(positions)
 
 	for zoom := 1; zoom <= t.zoomLevels; zoom++ {
-		slog.Info("rescaling tiles", "zoom", zoom)
+		t.log.Infow("Rescaling tiles", "zoom", zoom)
 		positions = t.downscalePositions(zoom, positions)
 	}
 }

@@ -1,8 +1,8 @@
 package server
 
 import (
+	"errors"
 	"io/fs"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -29,7 +29,7 @@ func Serve(static fs.FS, config *config.Config) {
 	}
 
 	err = httpServer.ListenAndServe()
-	if err != nil {
-		slog.Error("failed to start web server", "err", err)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		panic(err)
 	}
 }
