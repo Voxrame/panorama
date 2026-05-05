@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lord-server/panorama/pkg/geom"
-	"github.com/lord-server/panorama/pkg/world"
+	"github.com/Voxrame/panorama/pkg/geom"
+	"github.com/Voxrame/panorama/pkg/world"
 	"github.com/stretchr/testify/require"
 )
 

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/lord-server/panorama/internal/config"
+	"github.com/Voxrame/panorama/internal/config"
 )
 
 func Serve(static fs.FS, config *config.Config) {

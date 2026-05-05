@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/alexflint/go-arg"
-	"github.com/lord-server/panorama/internal/config"
-	"github.com/lord-server/panorama/internal/server"
-	"github.com/lord-server/panorama/static"
+	"github.com/Voxrame/panorama/internal/config"
+	"github.com/Voxrame/panorama/internal/server"
+	"github.com/Voxrame/panorama/static"
 )
 
 type RunArgs struct{}

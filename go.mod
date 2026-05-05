@@ -1,6 +1,6 @@
-module github.com/lord-server/panorama
+module github.com/Voxrame/panorama
 
-go 1.24.0
+go 1.26
 
 require (
 	github.com/alexflint/go-arg v1.5.1

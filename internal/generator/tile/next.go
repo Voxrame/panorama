@@ -1,9 +1,9 @@
 package tile
 
 import (
-	"github.com/lord-server/panorama/internal/game"
-	"github.com/lord-server/panorama/pkg/geom"
-	"github.com/lord-server/panorama/pkg/world"
+	"github.com/Voxrame/panorama/internal/game"
+	"github.com/Voxrame/panorama/pkg/geom"
+	"github.com/Voxrame/panorama/pkg/world"
 )
 
 type NextTiler struct {

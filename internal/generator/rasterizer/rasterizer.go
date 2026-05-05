@@ -5,9 +5,9 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/lord-server/panorama/internal/game"
-	"github.com/lord-server/panorama/pkg/lm"
-	"github.com/lord-server/panorama/pkg/mesh"
+	"github.com/Voxrame/panorama/internal/game"
+	"github.com/Voxrame/panorama/pkg/lm"
+	"github.com/Voxrame/panorama/pkg/mesh"
 )
 
 const Gamma = 2.2

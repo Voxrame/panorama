@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/lord-server/panorama/pkg/geom"
-	"github.com/lord-server/panorama/pkg/world/sqlite3"
+	"github.com/Voxrame/panorama/pkg/geom"
+	"github.com/Voxrame/panorama/pkg/world/sqlite3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

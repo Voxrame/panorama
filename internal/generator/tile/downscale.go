@@ -8,8 +8,8 @@ import (
 
 	"github.com/nfnt/resize"
 
-	"github.com/lord-server/panorama/pkg/imageutil"
-	"github.com/lord-server/panorama/pkg/lm"
+	"github.com/Voxrame/panorama/pkg/imageutil"
+	"github.com/Voxrame/panorama/pkg/lm"
 )
 
 func uniquePositions(input []TilePosition) []TilePosition {

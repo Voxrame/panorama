@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 
 	lru "github.com/hashicorp/golang-lru/v2"
-	"github.com/lord-server/panorama/pkg/geom"
-	"github.com/lord-server/panorama/pkg/world/postgres"
-	"github.com/lord-server/panorama/pkg/world/selector"
-	"github.com/lord-server/panorama/pkg/world/sqlite3"
+	"github.com/Voxrame/panorama/pkg/geom"
+	"github.com/Voxrame/panorama/pkg/world/postgres"
+	"github.com/Voxrame/panorama/pkg/world/selector"
+	"github.com/Voxrame/panorama/pkg/world/sqlite3"
 )
 
 type Backend interface {

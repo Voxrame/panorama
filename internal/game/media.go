@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/lord-server/panorama/pkg/imageutil"
-	"github.com/lord-server/panorama/pkg/mesh"
+	"github.com/Voxrame/panorama/pkg/imageutil"
+	"github.com/Voxrame/panorama/pkg/mesh"
 )
 
 type MediaCache struct {

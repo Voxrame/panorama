@@ -8,7 +8,7 @@ import (
 	"log"
 
 	"github.com/klauspost/compress/zstd"
-	"github.com/lord-server/panorama/pkg/geom"
+	"github.com/Voxrame/panorama/pkg/geom"
 )
 
 const NodeSizeInBytes = 4

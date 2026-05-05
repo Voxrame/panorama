@@ -1,6 +1,6 @@
 package mesh
 
-import "github.com/lord-server/panorama/pkg/lm"
+import "github.com/Voxrame/panorama/pkg/lm"
 
 type CubeFaces uint8
 

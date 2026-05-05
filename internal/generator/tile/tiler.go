@@ -11,12 +11,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/lord-server/panorama/internal/game"
-	"github.com/lord-server/panorama/internal/generator/rasterizer"
-	"github.com/lord-server/panorama/pkg/geom"
-	"github.com/lord-server/panorama/pkg/imageutil"
-	"github.com/lord-server/panorama/pkg/lm"
-	"github.com/lord-server/panorama/pkg/world"
+	"github.com/Voxrame/panorama/internal/game"
+	"github.com/Voxrame/panorama/internal/generator/rasterizer"
+	"github.com/Voxrame/panorama/pkg/geom"
+	"github.com/Voxrame/panorama/pkg/imageutil"
+	"github.com/Voxrame/panorama/pkg/lm"
+	"github.com/Voxrame/panorama/pkg/world"
 )
 
 type TilePosition struct {

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/lord-server/panorama/pkg/world"
+	"github.com/Voxrame/panorama/pkg/world"
 	"github.com/stretchr/testify/require"
 )
 
