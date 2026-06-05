@@ -1,2 +1,5 @@
 config.toml
 /panorama
+/bin
+/tiles
+/static
