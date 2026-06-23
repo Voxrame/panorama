@@ -2,27 +2,37 @@ package web
 
 import (
 	"log/slog"
-
-	"github.com/gofiber/fiber/v2"
+	"net/http"
+	"strconv"
 
 	"github.com/lord-server/panorama/internal/config"
 	"github.com/lord-server/panorama/internal/web/handlers"
 )
 
 func Serve(config *config.Config) {
-	app := fiber.New()
+	mux := http.NewServeMux()
 
-	app.Static("/", "./static")
-	app.Static("/tiles", config.System.TilesPath, fiber.Static{
-		MaxAge: 5,
-	})
+	mux.Handle("GET /api/v1/metadata", handlers.Metadata(config))
 
-	app.Route("/api/v1", func(router fiber.Router) {
-		app.Get("/metadata", handlers.Metadata(config))
-	})
+	mux.Handle("GET /", http.FileServer(http.Dir("./static")))
 
-	err := app.Listen(config.Web.ListenAddress)
-	if err != nil {
+	tilesHandler := withCacheControl(http.StripPrefix("/tiles/", http.FileServer(http.Dir(config.System.TilesPath))))
+	mux.Handle("GET /tiles/", tilesHandler)
+
+	srv := &http.Server{
+		Addr:    config.Web.ListenAddress,
+		Handler: mux,
+	}
+
+	slog.Info("starting web server", "address", config.Web.ListenAddress)
+	if err := srv.ListenAndServe(); err != nil {
 		slog.Error("failed to start web server", "err", err)
 	}
+}
+
+func withCacheControl(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(5))
+		h.ServeHTTP(w, r)
+	})
 }
