@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.21-alpine AS backend_builder
+FROM docker.io/golang:1.26-alpine AS backend_builder
 WORKDIR /app
 RUN apk add git
 COPY go.mod go.sum ./

@@ -45,9 +45,7 @@ services:
 
 ### Building manually
 
-Building panorama manually requires go 1.21 or newer, due to its use
-of `log/slog`. Afterwards, build the module with the following
-commands:
+Building panorama manually requires go 1.26 or newer.
 
 ```
 go mod download && go mod verify
