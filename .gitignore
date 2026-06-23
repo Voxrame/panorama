@@ -1,5 +1,6 @@
 config.toml
 /panorama
+/panorama.exe
 /bin
 /tiles
 /static

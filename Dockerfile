@@ -12,9 +12,9 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY --from=ui_builder /app/dist ./frontend/dist
 COPY frontend/static.go ./frontend/
-COPY cmd ./cmd
+COPY main.go ./
 COPY internal ./internal
-RUN go build -v ./cmd/panorama
+RUN go build -v .
 
 FROM scratch
 WORKDIR /app

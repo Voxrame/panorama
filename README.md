@@ -48,8 +48,7 @@ services:
 Building panorama manually requires go 1.26 or newer.
 
 ```
-go mod download && go mod verify
-go build -v ./cmd/panorama
+go build
 ```
 
 This builds the panorama binary in `./panorama`. 
@@ -66,7 +65,7 @@ world directory using the output from the `nodes_dump` mod.
 
 The textures and meshes (only .obj currently supported) are fetched
 from the game and mod directories. These are specified using the
-`game_path` and `mod_path`directories. 
+`game_path` and `mod_path` directories. 
 
 
 
@@ -74,7 +73,6 @@ from the game and mod directories. These are specified using the
 
 MIT
 
-[instance]: http://map.lord-server.ru/
 [mapserver]: https://github.com/minetest-mapserver/mapserver
 [docker-image]: https://github.com/lord-server/panorama/pkgs/container/panorama
 [nodes_dump]: https://github.com/lord-server/nodes_dump
