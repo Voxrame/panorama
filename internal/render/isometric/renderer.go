@@ -42,14 +42,13 @@ func (r *IsometricRenderer) renderNode(
 	offset image.Point,
 	depthOffset float64,
 ) {
-	name, param1, param2 := neighborhood.GetNode(pos)
+	entry, param1, param2 := neighborhood.GetNode(pos)
 
-	// Fast path: checking for air immediately is faster than fetching NodeDefinition
-	if name == "air" {
+	if entry.Def.DrawType == game.DrawTypeAirlike {
 		return
 	}
 
-	nodeDef := r.game.NodeDef(name)
+	nodeDef := entry.Def
 
 	needsAlphaBlending := true
 	if nodeDef.DrawType == game.DrawTypeNormal {
@@ -73,7 +72,7 @@ func (r *IsometricRenderer) renderNode(
 	hiddenFaces := mesh.CubeFaces(0)
 	for i, offset := range neighborOffsets {
 		neighborPos := pos.Add(offset)
-		neighborName, param1, _ := neighborhood.GetNode(neighborPos)
+		neighborEntry, param1, _ := neighborhood.GetNode(neighborPos)
 		if param1 > maxParam1 {
 			maxParam1 = param1
 		}
@@ -82,8 +81,7 @@ func (r *IsometricRenderer) renderNode(
 		if nodeDef.DrawType.IsLiquid() {
 			hiddenFaces |= mesh.CubeFaceWest | mesh.CubeFaceDown | mesh.CubeFaceSouth
 
-			neighborNodeDef := r.game.NodeDef(neighborName)
-			if neighborNodeDef.DrawType.IsLiquid() {
+			if neighborEntry.Def.DrawType.IsLiquid() {
 				hiddenFaces |= neighborFaces[i]
 			}
 		}
@@ -96,7 +94,7 @@ func (r *IsometricRenderer) renderNode(
 	}
 
 	renderableNode := render.RenderableNode{
-		Name:        name,
+		Name:        entry.Name,
 		Light:       render.DecodeLight(maxParam1),
 		Param2:      param2,
 		HiddenFaces: hiddenFaces,
@@ -170,12 +168,12 @@ func (r *IsometricRenderer) RenderTile(
 					Z: centerZ + z + i,
 				}
 
-				neighborhood := render.BlockNeighborhood{}
+			neighborhood := render.NewBlockNeighborhood(game)
 
-				neighborhood.FetchBlock(world, spatial.BlockPosition{X: 0, Y: 0, Z: 0}, blockPos)
-				neighborhood.FetchBlock(world, spatial.BlockPosition{X: 1, Y: 0, Z: 0}, blockPos)
-				neighborhood.FetchBlock(world, spatial.BlockPosition{X: 0, Y: 1, Z: 0}, blockPos)
-				neighborhood.FetchBlock(world, spatial.BlockPosition{X: 0, Y: 0, Z: 1}, blockPos)
+			neighborhood.FetchBlock(world, game, spatial.BlockPosition{X: 0, Y: 0, Z: 0}, blockPos)
+			neighborhood.FetchBlock(world, game, spatial.BlockPosition{X: 1, Y: 0, Z: 0}, blockPos)
+			neighborhood.FetchBlock(world, game, spatial.BlockPosition{X: 0, Y: 1, Z: 0}, blockPos)
+			neighborhood.FetchBlock(world, game, spatial.BlockPosition{X: 0, Y: 0, Z: 1}, blockPos)
 
 				offset := image.Point{
 					X: render.BaseResolution * (z - x) / 2 * spatial.BlockSize,

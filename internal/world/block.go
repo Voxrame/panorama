@@ -5,6 +5,7 @@ import (
 	"compress/zlib"
 	"encoding/binary"
 	"io"
+	"iter"
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/lord-server/panorama/internal/spatial"
@@ -264,6 +265,16 @@ func DecodeMapBlock(data []byte) (*MapBlock, error) {
 
 func (b *MapBlock) ResolveName(id uint16) string {
 	return b.mappings[id]
+}
+
+func (b *MapBlock) MappingIter() iter.Seq2[uint16, string] {
+	return func(yield func(uint16, string) bool) {
+		for id, name := range b.mappings {
+			if !yield(id, name) {
+				return
+			}
+		}
+	}
 }
 
 func (b *MapBlock) GetNode(pos spatial.NodePosition) Node {
