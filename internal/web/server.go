@@ -17,7 +17,11 @@ func Serve(config *config.Config) {
 
 	mux.Handle("GET /api/v1/metadata", handlers.Metadata(config))
 
-	mux.Handle("GET /", spaHandler(frontend.FS()))
+	if _, err := fs.Stat(frontend.FS(), "index.html"); err == nil {
+		mux.Handle("GET /", spaHandler(frontend.FS()))
+	} else {
+		slog.Warn("frontend dist is empty, SPA routes disabled")
+	}
 
 	tilesHandler := withCacheControl(http.StripPrefix("/tiles/", http.FileServer(http.Dir(config.System.TilesPath))))
 	mux.Handle("GET /tiles/", tilesHandler)
